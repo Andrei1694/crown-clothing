@@ -1,11 +1,11 @@
 import { useState } from "react";
+import FormInput from "../form-input/form-input.component";
+import Button from "../button/button.component";
+import "./sign-up-form.styles.scss";
 import {
   createAuthUserWithEmailAndPassword,
   createUserDocumentFromAuth,
 } from "../../utils/firebase.utils";
-import FormInput from "../form-input/form-input.component";
-import "./sign-up-form.styles.scss";
-import Button from "../button/button.component";
 
 const defaultFormFields = {
   displayName: "",
@@ -13,25 +13,23 @@ const defaultFormFields = {
   password: "",
   confirmPassword: "",
 };
-export default function SignUpForm() {
+
+const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-    setFormFields({ ...formFields, [name]: value });
-  }
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
 
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (password !== confirmPassword) {
-      alert("password dosent match");
+      alert("passwords do not match");
       return;
     }
-    console.log(email);
+
     try {
       const { user } = await createAuthUserWithEmailAndPassword(
         email,
@@ -47,7 +45,14 @@ export default function SignUpForm() {
         console.log("user creation encountered an error", error);
       }
     }
-  }
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormFields({ ...formFields, [name]: value });
+  };
+
   return (
     <div className="sign-up-container">
       <h2>Don't have an account?</h2>
@@ -88,10 +93,10 @@ export default function SignUpForm() {
           name="confirmPassword"
           value={confirmPassword}
         />
-        <Button buttonType="inverted" type="submit">
-          Sign Up
-        </Button>
+        <Button type="submit">Sign Up</Button>
       </form>
     </div>
   );
-}
+};
+
+export default SignUpForm;
